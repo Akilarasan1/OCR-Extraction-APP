@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OCR App</title>
+  <style>
+    body { font-family: Arial; margin: 40px; }
+    .box { max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+    label { display: block; margin-top: 10px; }
+    select, input[type="file"], button { width: 100%; padding: 10px; margin-top: 5px; }
+    pre { background: #f4f4f4; padding: 10px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>OCR File Upload</h2>
+    <form id="ocrForm">
+      <label for="fileType">Choose File Type</label>
+      <select id="fileType" name="file_type">
+        <option value="image">Image</option>
+        <option value="pdf">PDF</option>
+      </select>
+
+      <label for="engine">Choose OCR Engine</label>
+      <select id="engine" name="engine">
+        <option value="pytesseract">Pytesseract</option>
+        <option value="paddle">Paddle</option>
+        <option value="google">Google</option>
+      </select>
+
+      <label for="file">Select a file</label>
+      <input type="file" id="file" name="file" required />
+
+      <button type="submit">Upload</button>
+    </form>
+
+    <h3>Result:</h3>
+    <pre id="result">Waiting for upload...</pre>
+  </div>
+
+  <script>
+    document.getElementById("ocrForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const response = await fetch("/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await response.json();
+      document.getElementById("result").innerText = JSON.stringify(result, null, 2);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+ocr-app/
+├── backend/ (your FastAPI app)
+│   ├── main.py
+│   └── ... (OCR logic)
+├── frontend/ (React app)
+│   ├── public/
+│   ├── src/
+│   │   └── App.jsx
+│   └── package.json
+
+
+npx create-react-app frontend
+cd frontend
+npm install axios
+
+
+
+run the full app
+--->start fastapi backend
+    cd backend
+    uvicorn main:app --reload
+
+--->Start React frontend
+    cd frontend
+    npm start
+
+
+------- * -------------
+Deployment Options (Free)
+Use Replit for the FastAPI backend
+
+Use Netlify or Vercel for React frontend
+
+Or use ngrok to share backend temporarily
+
+
+----> npm install axios
+
+
+https://chatgpt.com/share/6891ae82-cce4-8002-923b-b511dd7ff7d0
