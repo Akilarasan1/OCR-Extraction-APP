@@ -55,8 +55,6 @@ def process_coordinates(sep_ext):
     except Exception as e:
         print(f"error while processing coordinates sort data >>>>>>> {e}")
 
-def coordinates_mid_sort():
-    return None
 
 
 def extract_text_with_paddleocr(image_paths, lang ='en'):
@@ -74,7 +72,7 @@ def extract_text_with_paddleocr(image_paths, lang ='en'):
                 for i, page in enumerate(img.sequence):
                     with Image(page) as single_page:
                         single_page.background_color = Color("white")
-                        single_page.alpha_channel = "remove"
+                        # single_page.alpha_channel = "remove"
 
                         tmp_path = Path(__file__).resolve().parents[2] / "library" / "images"
                         tmp_path.mkdir(exist_ok=True, parents=True)
