@@ -7,6 +7,7 @@ const filePreview = document.getElementById('filePreview');
 const resultText = document.getElementById('resultText');
 const loadingIndicator = document.getElementById('loadingIndicator');
 const copyBtn = document.getElementById('copyBtn');
+const uploadSection = document.getElementById('uploadSection');
 
 fileInput.addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -173,4 +174,39 @@ clearBtn.addEventListener('click', function() {
     clearBtn.disabled = true;
     downloadBtn.disabled = true;
     copyBtn.disabled = true;
+
 });
+
+
+// Prevent default behaviors for drag/drop
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadSection.addEventListener(eventName, e => e.preventDefault());
+    document.body.addEventListener(eventName, e => e.preventDefault());
+});
+
+// Highlight drop area
+['dragenter', 'dragover'].forEach(eventName => {
+    uploadSection.addEventListener(eventName, () => {
+        uploadSection.classList.add('drag-over');
+    });
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    uploadSection.addEventListener(eventName, () => {
+        uploadSection.classList.remove('drag-over');
+    });
+});
+
+// Handle dropped files
+uploadSection.addEventListener('drop', e => {
+    const file = e.dataTransfer.files[0];
+    if (file) {
+        fileInput.files = e.dataTransfer.files; // So the existing logic still works
+        showFilePreview(file);
+        extractBtn.disabled = false;
+        clearBtn.disabled = false;
+    }
+});
+
+
+

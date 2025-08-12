@@ -15,7 +15,7 @@ h1 {
     color: #333;
     text-align: center;
 }
-.upload-section {
+/* .upload-section {
     margin-bottom: 20px;
     padding: 20px;
     border: 2px dashed #ccc;
@@ -29,7 +29,34 @@ h1 {
 .preview img, .preview embed {
     max-width: 100%;
     max-height: 300px;
+} */
+
+.upload-section {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    text-align: center;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
 }
+
+.upload-section.drag-over {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+}
+
+.preview img {
+    max-width: 100%;
+    margin-top: 10px;
+}
+
+.preview embed {
+    margin-top: 10px;
+}
+
+
+
+
 .controls {
     display: flex;
     gap: 10px;
@@ -102,7 +129,6 @@ select {
     border: 1px solid #ddd;
 }
 
-/* Add these styles to your existing CSS */
 .result-header {
     display: flex;
     justify-content: space-between;
@@ -134,4 +160,5 @@ select {
 
 .fa-copy {
     font-size: 14px;
+
 }
