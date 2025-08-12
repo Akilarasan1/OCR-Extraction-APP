@@ -1,27 +1,32 @@
-## 🖼️ Application Preview
+# TextLens - OCR Tool
 
-### ✨ Key Features
-<div align="center">
-  
-| Feature | Preview |
-|---------|---------|
-| **Modern Interface** | ![Interface](https://i.imgur.com/JK5f8Ec.png) |
-| **Drag & Drop Upload** | ![Drag Drop](https://i.imgur.com/8X9vZYQ.gif) |
-| **Multi-Language OCR** | ![Language Select](https://i.imgur.com/L3V4n2P.png) |
-| **PDF & Image Support** | ![File Support](https://i.imgur.com/5bG7QjD.png) |
-| **Text Extraction** | ![Extraction](https://i.imgur.com/vYHdLQk.gif) |
-| **Copy & Download** | ![Copy Feature](https://i.imgur.com/9XzZJ4k.gif) |
 
-</div>
+Extract text from images and PDFs with multi-language support using PaddleOCR engine.
 
-### 🚀 Quick Demo
-[![Video Demo](https://img.youtube.com/vi/YOUR_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
+## 🚀 Features
 
-### 🛠️ Technical Highlights
-```bash
-✔ PaddleOCR Engine
-✔ Multi-language Support (10+ languages)
-✔ PDF & Image Processing
-✔ Responsive Design
-✔ Drag & Drop Interface
-✔ Clipboard Integration
+- **Drag & Drop Interface** - Intuitive file upload
+- **Multi-language OCR** - Supports 10+ languages
+- **PDF & Image Processing** - Works with PDFs, PNG, JPG
+- **Real-time Preview** - View uploaded documents
+- **Copy/Download** - Easy text extraction
+- **Responsive Design** - Works on all devices
+
+## 🛠️ Tech Stack
+
+**Frontend**:
+- HTML5, CSS3, JavaScript
+- Font Awesome (Icons)
+
+**Backend**:
+- Python 3.10+
+- FastAPI (Web framework)
+- PaddleOCR (OCR engine)
+- PymuPDF (PDF text extraction)
+
+## 📦 Installation
+
+### Prerequisites
+- Python 3.10+
+- PaddleOCR dependencies
+- Pymupdf -Fitz
