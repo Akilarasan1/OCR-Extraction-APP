@@ -1,61 +1,27 @@
-Project Title: 
-      OCR EXTRACTION APP with File Upload and Engine Selector
+## 🖼️ Application Preview
 
-✅ What I Built
-        I created an OCR (Optical Character Recognition) web application using FastAPI (Python) for the backend and ReactJS for the frontend.
+### ✨ Key Features
+<div align="center">
+  
+| Feature | Preview |
+|---------|---------|
+| **Modern Interface** | ![Interface](https://i.imgur.com/JK5f8Ec.png) |
+| **Drag & Drop Upload** | ![Drag Drop](https://i.imgur.com/8X9vZYQ.gif) |
+| **Multi-Language OCR** | ![Language Select](https://i.imgur.com/L3V4n2P.png) |
+| **PDF & Image Support** | ![File Support](https://i.imgur.com/5bG7QjD.png) |
+| **Text Extraction** | ![Extraction](https://i.imgur.com/vYHdLQk.gif) |
+| **Copy & Download** | ![Copy Feature](https://i.imgur.com/9XzZJ4k.gif) |
 
-The app lets users:
+</div>
 
-      Upload image or PDF files
+### 🚀 Quick Demo
+[![Video Demo](https://img.youtube.com/vi/YOUR_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
 
-      Choose the OCR engine (like Pytesseract, PaddleOCR, or Google Vision API)
-
-      Extract the text from the uploaded files
-
-      View the result on the screen
-
-🔧 Technologies I Used
-      FastAPI – for creating the API endpoints
-      
-      ReactJS – for the frontend UI
-      
-      Pytesseract, PaddleOCR, Google OCR – to extract text from images and PDFs
-      
-      HTML/CSS + JS – used inside the React components
-      
-      Axios – to connect React with FastAPI
-      
-      CORS – to allow frontend and backend to communicate
-
-🔁 How It Works
-      User selects:
-
-            File Type: PDF or Image
-      
-             OCR Engine: Pytesseract / Paddle / Google
-      
-      Uploads a file
-
-Based on selection, the file is sent to the correct backend API:
-
-    For PDFs: 
-          /read_pdf_file
-
-    For images:
-
-          /pytesseract_img
-          
-          /paddle_ocr
-          
-          /google_ocr_engine
-
-OCR is performed on the backend
-
-Extracted text is returned and shown on the webpage
-
-💡 Why I Built This
-    I wanted to make it easy for non-technical users to extract text from documents
-    
-    I also wanted to learn how to build a full-stack app using React and FastAPI
-    
-    I focused on learning file upload handling, API routing, and React integration
+### 🛠️ Technical Highlights
+```bash
+✔ PaddleOCR Engine
+✔ Multi-language Support (10+ languages)
+✔ PDF & Image Processing
+✔ Responsive Design
+✔ Drag & Drop Interface
+✔ Clipboard Integration
