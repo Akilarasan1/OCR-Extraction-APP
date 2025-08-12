@@ -9,17 +9,18 @@ const loadingIndicator = document.getElementById('loadingIndicator');
 const copyBtn = document.getElementById('copyBtn');
 const uploadSection = document.getElementById('uploadSection');
 
+// File input handler
 fileInput.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
+    handleFileSelection(file);
+});
 
-    // Enable buttons
+function handleFileSelection(file) {
     extractBtn.disabled = false;
     clearBtn.disabled = false;
-
-    // Show preview
     showFilePreview(file);
-});
+}
 
 function showFilePreview(file) {
     filePreview.innerHTML = '';
@@ -40,88 +41,23 @@ function showFilePreview(file) {
     }
 }
 
-// Single Extract text event listener with language support
-extractBtn.addEventListener('click', async function() {
+// Single extract button handler
+extractBtn.addEventListener('click', async function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    
     const file = fileInput.files[0];
     if (!file) return;
 
-    loadingIndicator.style.display = 'block';
-    extractBtn.disabled = true;
-
-    try {
-        const formData = new FormData();
-        formData.append('file', file);
-        
-        // Get selected language (default to English if not selected)
-        const language = document.getElementById('languageSelect').value || 'en';
-        
-        const response = await fetch(`/api/extract?lang=${encodeURIComponent(language)}`, {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!response.ok) {
-             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.detail || errorData.message || 'Extraction failed');
-        }
-
-        const data = await response.json();
-        resultText.value = data.text;
-        downloadBtn.disabled = false;
-        
-    } catch (error) {
-        resultText.value = `Error: ${error.message}`;
-        console.error('Extraction error:', error);
-    } finally {
-        loadingIndicator.style.display = 'none';
-        extractBtn.disabled = false;
-    }
-});
-
-// Clear everything
-clearBtn.addEventListener('click', function() {
-    fileInput.value = '';
-    filePreview.innerHTML = '';
-    resultText.value = '';
-    extractBtn.disabled = true;
-    clearBtn.disabled = true;
-    downloadBtn.disabled = true;
-});
-
-// Download text
-downloadBtn.addEventListener('click', function() {
-    if (!resultText.value) return;
-
-    const blob = new Blob([resultText.value], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'extracted_text.txt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-});
-
-
-
-// Modified extractBtn click handler
-extractBtn.addEventListener('click', async function() {
-    const file = fileInput.files[0];
-    if (!file) return;
-
-    // Clear previous results immediately
     resultText.value = '';
     copyBtn.disabled = true;
     downloadBtn.disabled = true;
-    
     loadingIndicator.style.display = 'block';
     extractBtn.disabled = true;
 
     try {
         const formData = new FormData();
         formData.append('file', file);
-        
         const language = document.getElementById('languageSelect').value || 'en';
         
         const response = await fetch(`/api/extract?lang=${encodeURIComponent(language)}`, {
@@ -129,15 +65,12 @@ extractBtn.addEventListener('click', async function() {
             body: formData
         });
 
-        if (!response.ok) {
-            throw new Error(await response.text());
-        }
-
+        if (!response.ok) throw new Error(await response.text());
+        
         const data = await response.json();
         resultText.value = data.text;
         downloadBtn.disabled = false;
         copyBtn.disabled = false;
-        
     } catch (error) {
         resultText.value = `Error: ${error.message}`;
         console.error('Extraction error:', error);
@@ -147,66 +80,142 @@ extractBtn.addEventListener('click', async function() {
     }
 });
 
-// New copy button functionality
-copyBtn.addEventListener('click', function() {
-    if (!resultText.value) return;
-    
-    resultText.select();
-    document.execCommand('copy');
-    
-    // Visual feedback
-    const originalText = copyBtn.innerHTML;
-    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-    copyBtn.style.backgroundColor = '#28a745';
-    
-    setTimeout(() => {
-        copyBtn.innerHTML = originalText;
-        copyBtn.style.backgroundColor = '#6c757d';
-    }, 2000);
+// Drag and drop implementation
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadSection.addEventListener(eventName, e => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (eventName === 'drop') {
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        } else {
+            uploadSection.classList.toggle('drag-over', 
+                eventName === 'dragenter' || eventName === 'dragover');
+        }
+    }, { passive: false });
 });
 
-// Clear button should also disable copy button
-clearBtn.addEventListener('click', function() {
+
+clearBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    
+    // Reset file input
     fileInput.value = '';
+    
+    // Clear preview and results
     filePreview.innerHTML = '';
     resultText.value = '';
-    extractBtn.disabled = true;
-    clearBtn.disabled = true;
-    downloadBtn.disabled = true;
-    copyBtn.disabled = true;
-
-});
-
-
-// Prevent default behaviors for drag/drop
-['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    uploadSection.addEventListener(eventName, e => e.preventDefault());
-    document.body.addEventListener(eventName, e => e.preventDefault());
-});
-
-// Highlight drop area
-['dragenter', 'dragover'].forEach(eventName => {
-    uploadSection.addEventListener(eventName, () => {
-        uploadSection.classList.add('drag-over');
+    
+    // Disable all action buttons
+    [extractBtn, clearBtn, downloadBtn, copyBtn].forEach(btn => {
+        btn.disabled = true;
     });
+    
+    // Reset drag-over state if active
+    uploadSection.classList.remove('drag-over');
 });
 
-['dragleave', 'drop'].forEach(eventName => {
-    uploadSection.addEventListener(eventName, () => {
-        uploadSection.classList.remove('drag-over');
-    });
-});
 
-// Handle dropped files
-uploadSection.addEventListener('drop', e => {
-    const file = e.dataTransfer.files[0];
-    if (file) {
-        fileInput.files = e.dataTransfer.files; // So the existing logic still works
-        showFilePreview(file);
-        extractBtn.disabled = false;
-        clearBtn.disabled = false;
+downloadBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    
+    if (!resultText.value) return;
+
+    try {
+        const blob = new Blob([resultText.value], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `extracted_${new Date().getTime()}.txt`; // Unique filename
+        a.style.display = 'none';
+        
+        document.body.appendChild(a);
+        a.click();
+        
+        // Cleanup
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 100);
+    } catch (error) {
+        console.error('Download failed:', error);
+        resultText.value = `Download Error: ${error.message}\n\n${resultText.value}`;
     }
 });
 
 
 
+copyBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    
+    if (!resultText.value) return;
+    
+    try {
+        // Modern clipboard API (preferred)
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(resultText.value)
+                .then(() => showCopyFeedback())
+                .catch(err => console.error('Clipboard error:', err));
+        } 
+        // Fallback for older browsers
+        else {
+            resultText.select();
+            document.execCommand('copy');
+            showCopyFeedback();
+        }
+    } catch (error) {
+        console.error('Copy failed:', error);
+    }
+});
+
+function showCopyFeedback() {
+    const originalHTML = copyBtn.innerHTML;
+    const originalBg = copyBtn.style.backgroundColor;
+    
+    copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    copyBtn.style.backgroundColor = '#28a745';
+    
+    setTimeout(() => {
+        copyBtn.innerHTML = originalHTML;
+        copyBtn.style.backgroundColor = originalBg;
+    }, 2000);
+}
+
+
+// Unified drag-and-drop handlers
+const handleDragEvent = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (e.type === 'drop') {
+        const files = e.dataTransfer.files;
+        if (files.length) {
+            fileInput.files = files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    uploadSection.classList.toggle(
+        'drag-over',
+        e.type === 'dragenter' || e.type === 'dragover'
+    );
+};
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadSection.addEventListener(eventName, handleDragEvent);
+});
+
+
+
+// Reset drag state if user drags outside window
+window.addEventListener('dragleave', (e) => {
+    if (e.clientX <= 0 || e.clientY <= 0 
+        || e.clientX >= window.innerWidth 
+        || e.clientY >= window.innerHeight) {
+        uploadSection.classList.remove('drag-over');
+    }
+});
