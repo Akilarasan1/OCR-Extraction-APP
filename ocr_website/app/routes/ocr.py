@@ -32,8 +32,10 @@ async def extract_text(file: UploadFile = File(...),engine: str = "paddleocr",la
         
         max_size = 10 * 1024 * 1024         # Check file size (10MB limit)
         contents = await file.read()
+        
         if len(contents) > max_size:
             raise HTTPException(status_code=413, detail="File too large")
+        
         extension = Path(file.filename).suffix.lower()
 
         if extension in SUPPORTED_IMAGE_TYPES:
@@ -54,7 +56,7 @@ async def _process_image(image_bytes: bytes,engine: str,lang: str,original_filen
     try:
         temp_path = _save_temp_file(image_bytes, original_filename)
         if engine == "paddleocr":
-            text = paddleocr.extract_text_with_paddleocr([temp_path], lang)
+            text = paddleocr.extract_text_with_paddleocr(temp_path, lang)
         else:
             raise HTTPException(status_code=400, detail="Invalid OCR engine")
 
