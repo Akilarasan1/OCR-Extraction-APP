@@ -4,65 +4,316 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-        <meta http-equiv="Pragma" content="no-cache">
-        <meta http-equiv="Expires" content="0">
-    <title>OCR Text Extraction</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-
-</head>
-<body>
-    <div class="container">
-        <h1>OCR Text Extraction</h1>
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>VisionOCR - OCR Text Extraction</title>
+    <link rel="icon" type="image/png" href="static/images/big_logo.png">
+    <meta name="description" content="Extract text from images and documents with precision using advanced OCR technology. Support for multiple languages and formats.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'spin-slow': 'spin 2s linear infinite',
+                        'pulse-soft': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
         
-        <div class="upload-section" id="uploadSection">
-            <h2>Upload File</h2>
+        /* Text selection */
+        ::selection {
+            background: #3b82f6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200">
+    <!-- Header -->
+    <header class="flex justify-between items-center p-6">
+        <div class="flex items-center space-x-3">
+            <div class="p-2 bg-blue-500 rounded-xl shadow-lg">
+                <i data-lucide="eye" class="w-6 h-6 text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                VisionOCR
+            </h1>
+        </div>
+        <div class="text-right">
+            <h1 class="text-3xl md:text-4xl font-bold text-white">VisionOCR</h1>
+            <p class="text-slate-300 text-sm">Advanced OCR Technology</p>
+        </div>
+    </header>
 
-            <p>Drag & Drop file here or</p>
-            <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg">
-            <div class="preview" id="filePreview"></div>
+    <div class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                Extract Text from Images & Documents
+            </h2>
+            <p class="text-slate-300 text-lg max-w-2xl mx-auto">
+                Powerful OCR technology that accurately extracts text from images and PDFs. 
+                Choose your document's language for optimal recognition accuracy.
+            </p>
+        </div>
 
-            <div class="options">
-                <div>
-                    <label for="languageSelect">Language:</label>
-                    <select id="languageSelect">
-                        <option value="en">English</option>
-                        <option value="ar">Arabic</option>
-                        <option value="fr">French</option>
-                        <option value="es">Spanish</option>
-                        <option value="de">German</option>
-                        <option value="hi">Hindi</option>
-                        <option value="ja">Japanese</option>
-                        <option value="ko">Korean</option>
-                        <option value="ru">Russian</option>
-                        <option value="zh">Chinese</option>
-                    </select>
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Upload Section -->
+            <div class="space-y-6">
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl">
+                    <h3 class="text-2xl font-semibold text-white mb-6 flex items-center space-x-2">
+                        <i data-lucide="upload" class="w-6 h-6"></i>
+                        <span>Upload Document</span>
+                    </h3>
+
+                    <!-- Drag and Drop Area -->
+                    <div id="dropZone" class="relative border-2 border-dashed border-slate-600 hover:border-slate-500 rounded-xl p-8 text-center transition-all duration-300 cursor-pointer">
+                        <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                        
+                        <div class="space-y-4">
+                            <div class="mx-auto w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center">
+                                <i data-lucide="upload" class="w-8 h-8 text-slate-300"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-medium">
+                                    Drag and drop your file here, or click to browse
+                                </p>
+                                <p class="text-slate-400 text-sm mt-1">
+                                    Supports PDF, PNG, JPG, JPEG (max 10MB)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language Selection -->
+                    <div class="mt-6">
+                        <label class="block text-white font-medium mb-3 flex items-center space-x-2">
+                            <i data-lucide="languages" class="w-5 h-5"></i>
+                            <span>Document Language (for OCR accuracy)</span>
+                        </label>
+                        <select id="languageSelect" class="w-full bg-slate-800 border border-slate-600 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="en">English</option>
+                            <option value="fr">French</option>
+                            <option value="es">Spanish</option>
+                            <option value="de">German</option>
+                            <option value="hi">Hindi</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ko">Korean</option>
+                            <option value="ru">Russian</option>
+                            <option value="ar">Arabic</option>
+                            <option value="zh">Chinese</option>
+                        </select>
+                        <p class="text-slate-400 text-xs mt-1">Select the primary language in your document for better OCR accuracy</p>
+                    </div>
+
+                    <!-- File Preview -->
+                    <div id="filePreview" class="mt-6 hidden">
+                        <div class="relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6">
+                            <button id="removeFile" class="absolute top-3 right-3 p-1 rounded-full bg-red-500 hover:bg-red-600 transition-colors">
+                                <i data-lucide="x" class="w-4 h-4 text-white"></i>
+                            </button>
+                            <div id="previewContent" class="flex items-start space-x-4">
+                                <!-- Preview content will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-3 mt-6">
+                        <button id="extractBtn" disabled class="flex-1 min-w-[140px] bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 disabled:text-slate-400 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                            <span>Extract Text</span>
+                        </button>
+
+                        <button id="clearBtn" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl transition-all duration-200 flex items-center space-x-2">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Advanced Features -->
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl">
+                    <h4 class="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                        <span>Advanced Features</span>
+                    </h4>
+                    <ul class="space-y-3 text-slate-300">
+                        <li class="flex items-center space-x-3">
+                            <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                            <span>Multi-language support with automatic text detection</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                            <span>Preserves formatting and document structure</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                            <span>Handles handwritten text and complex layouts</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                            <span>Batch processing for multiple documents</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                            <span>Secure processing with no data retention</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="space-y-6">
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-semibold text-white flex items-center space-x-2">
+                            <i data-lucide="file-text" class="w-6 h-6"></i>
+                            <span>Extracted Text</span>
+                        </h3>
+                        
+                        <div class="flex space-x-2">
+                            <button id="copyBtn" disabled class="p-3 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 disabled:text-slate-500 text-white rounded-xl transition-all duration-200 flex items-center space-x-2">
+                                <i data-lucide="copy" class="w-5 h-5"></i>
+                            </button>
+                            
+                            <button id="downloadBtn" disabled class="p-3 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 disabled:text-slate-500 text-white rounded-xl transition-all duration-200">
+                                <i data-lucide="download" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <textarea id="resultText" readonly placeholder="Extracted text will appear here after processing your document..." class="w-full h-96 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-400 rounded-xl p-4 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                        
+                        <!-- Loading Overlay -->
+                        <div id="loadingOverlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm rounded-xl flex items-center justify-center hidden">
+                            <div class="text-center space-y-4">
+                                <div class="w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                                <p class="text-slate-300">Processing your document...</p>
+                                <p class="text-slate-400 text-sm">This may take a few moments</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Success Message -->
+                    <div id="successMessage" class="mt-4 flex items-center space-x-2 text-sm text-green-400 hidden">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        <span>Text extraction completed successfully</span>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div id="errorMessage" class="mt-4 flex items-center space-x-2 text-sm text-red-400 hidden">
+                        <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                        <span id="errorText">An error occurred during processing</span>
+                    </div>
+                </div>
+
+                <!-- Usage Tips -->
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl">
+                    <h4 class="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
+                        <i data-lucide="lightbulb" class="w-5 h-5"></i>
+                        <span>Tips for Best Results</span>
+                    </h4>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li class="flex items-start space-x-2">
+                            <span class="text-blue-400 mt-1">•</span>
+                            <span>Use high-resolution images (300 DPI or higher) for better accuracy</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-blue-400 mt-1">•</span>
+                            <span>Ensure good lighting and contrast in your images</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-blue-400 mt-1">•</span>
+                            <span>Select the correct language for your document's primary text</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-blue-400 mt-1">•</span>
+                            <span>Avoid skewed or rotated images when possible</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-
-        <div class="controls">
-            <button id="extractBtn" disabled>Extract Text</button>
-            <button id="clearBtn" class="clear" disabled>Clear</button>
-            <button id="downloadBtn" class="download" disabled>Download Text</button>
-        </div>
-        
-        <div class="loading" id="loadingIndicator">
-            <div class="spinner"></div>
-            <p>Processing your file...</p>
-        </div>
-        
-         <div class="result-section">
-        <div class="result-header">
-            <h2>Extracted Text</h2>
-            <button id="copyBtn" class="copy-btn" disabled>
-                <i class="fas fa-copy"></i> Copy
-            </button>
-        </div>
-        <textarea id="resultText" readonly placeholder="Extracted text will appear here..."></textarea>
-    </div>
     </div>
 
-   <script src="/static/js/script.js"></script>
 
+    <!-- Add this just before the closing </body> tag -->
+<footer class="bg-slate-900/50 border-t border-slate-700 mt-12 py-8">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <!-- Left Section - Branding -->
+            <div class="mb-6 md:mb-0">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-blue-500 rounded-xl shadow-lg">
+                        <i data-lucide="eye" class="w-6 h-6 text-white"></i>
+
+                    </div>
+                    <h2 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        VisionOCR
+                    </h2>
+                </div>
+                <p class="text-slate-400 text-sm mt-2">Advanced Text Extraction Technology</p>
+            </div>
+
+            <!-- Middle Section - Contact -->
+            <div class="mb-6 md:mb-0 text-center">
+                <h3 class="text-white font-medium mb-3 flex items-center justify-center space-x-2">
+                    <i data-lucide="mail" class="w-5 h-5"></i>
+                    <span>Contact Us</span>
+                </h3>
+                <div class="flex flex-col space-y-1 text-slate-400 text-sm">
+                    <a href="mailto:akilarasan20@gmail.com" class="hover:text-blue-400 transition-colors">
+                        akilarasan20@gmail.com
+                    </a>
+                    <a href="tel:+91 6383068156" class="hover:text-blue-400 transition-colors">
+                        +91 6383068156
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Section - Social/Copyright -->
+            <div class="text-center md:text-right">
+                <div class="flex justify-center md:justify-end space-x-4 mb-3">
+
+                    <a href="https://github.com/Akilarasan1" class="text-slate-400 hover:text-blue-400 transition-colors">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
+                    <!-- <a href="#" class="text-slate-400 hover:text-blue-400 transition-colors">
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    </a> -->
+                    <a href="https://www.linkedin.com/in/akilarasanp-74087121a" class="text-slate-400 hover:text-blue-400 transition-colors">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                </div>
+                <p class="text-slate-500 text-xs">
+                    &copy; 2025 VisionOCR. All rights reserved.
+                    <br>
+                    Developed by Akilarasan
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+<script src="/static/js/script.js"></script>
 </body>
 </html>
