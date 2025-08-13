@@ -1,3 +1,4 @@
+/* For better image rendering */
 button img {
     filter: brightness(0) invert(1); /* Converts black to white */
     transition: all 0.2s ease;
