@@ -30,3 +30,6 @@ Extract text from images and PDFs with multi-language support using PaddleOCR en
 - Python 3.10+
 - PaddleOCR dependencies
 - Pymupdf -Fitz
+
+### Deployed URL
+ - https://ocr-extraction-app.onrender.com/
