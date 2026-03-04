@@ -1,4 +1,4 @@
-# TextLens - OCR Tool
+# VisionOCR - OCR Tool
 
 
 Extract text from images and PDFs with multi-language support using PaddleOCR engine.
