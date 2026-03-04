@@ -1,0 +1,13 @@
+/* For better image rendering */
+button img {
+    filter: brightness(0) invert(1); /* Converts black to white */
+    transition: all 0.2s ease;
+}
+
+button:hover img {
+    transform: scale(1.05); /* Subtle hover effect */
+}
+
+button:disabled img {
+    opacity: 0.5; /* Matches disabled text opacity */
+}
