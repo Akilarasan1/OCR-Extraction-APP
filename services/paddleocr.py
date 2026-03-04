@@ -1,11 +1,8 @@
 from paddleocr import PaddleOCR
 import gc
-from wand.image import Image
-from wand.color import Color
+
 from concurrent.futures import ThreadPoolExecutor
 import os
-from wand.exceptions import MissingDelegateError, WandException
-from pathlib import Path
 
 def get_y_range(box):
     y_values = [pt[1] for pt in box]

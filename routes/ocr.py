@@ -1,13 +1,13 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from app.services import paddleocr
-from app.models.schemas import ExtractionResponse
+from services import paddleocr
+from models.schemas import ExtractionResponse
 from pathlib import Path
 import shutil
 import uuid
 import os
 from typing import Union
 import fitz  # PyMuPDF
-from PIL import Image
+# from PIL import Image
 import io
 import logging
 import json

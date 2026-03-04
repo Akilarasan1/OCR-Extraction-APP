@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from pathlib import Path
 
-from .routes import ocr
+from routes import ocr
 
 app = FastAPI(redirect_slashes=False,
     title="Multi-Engine OCR Service",
